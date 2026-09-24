@@ -40,13 +40,17 @@ api.interceptors.response.use(
   }
 )
 
+// ==================== AUTH ====================
+
 export const authService = {
   register: async (userData) => {
     try {
       const response = await api.post('/api/auth/register', userData)
       return response.data
     } catch (error) {
-      throw error.response?.data || { detail: 'Registration failed' }
+      throw error.response?.data || {
+        detail: 'Registration failed',
+      }
     }
   },
 
@@ -61,19 +65,28 @@ export const authService = {
         client_secret: '',
       })
 
-      const response = await api.post('/api/auth/login', formData, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      })
+      const response = await api.post(
+        '/api/auth/login',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      )
 
       if (response.data.access_token) {
-        localStorage.setItem('access_token', response.data.access_token)
+        localStorage.setItem(
+          'access_token',
+          response.data.access_token
+        )
       }
 
       return response.data
     } catch (error) {
-      throw error.response?.data || { detail: 'Login failed' }
+      throw error.response?.data || {
+        detail: 'Login failed',
+      }
     }
   },
 
@@ -82,7 +95,9 @@ export const authService = {
       const response = await api.get('/api/auth/me')
       return response.data
     } catch (error) {
-      throw error.response?.data || { detail: 'Failed to get user info' }
+      throw error.response?.data || {
+        detail: 'Failed to get user info',
+      }
     }
   },
 
@@ -91,21 +106,29 @@ export const authService = {
   },
 }
 
+// ==================== RESUME ====================
+
 export const resumeService = {
   upload: async (file) => {
     try {
       const formData = new FormData()
       formData.append('file', file)
 
-      const response = await api.post('/api/resume/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      const response = await api.post(
+        '/api/resume/upload',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      )
 
       return response.data
     } catch (error) {
-      throw error.response?.data || { detail: 'Upload failed' }
+      throw error.response?.data || {
+        detail: 'Upload failed',
+      }
     }
   },
 
@@ -114,7 +137,9 @@ export const resumeService = {
       const response = await api.get('/api/resume/list')
       return response.data
     } catch (error) {
-      throw error.response?.data || { detail: 'Failed to fetch resumes' }
+      throw error.response?.data || {
+        detail: 'Failed to fetch resumes',
+      }
     }
   },
 
@@ -123,7 +148,9 @@ export const resumeService = {
       const response = await api.get(`/api/resume/${id}`)
       return response.data
     } catch (error) {
-      throw error.response?.data || { detail: 'Failed to fetch resume' }
+      throw error.response?.data || {
+        detail: 'Failed to fetch resume',
+      }
     }
   },
 
@@ -132,40 +159,59 @@ export const resumeService = {
       const response = await api.delete(`/api/resume/${id}`)
       return response.data
     } catch (error) {
-      throw error.response?.data || { detail: 'Failed to delete resume' }
+      throw error.response?.data || {
+        detail: 'Failed to delete resume',
+      }
     }
   },
 }
 
+// ==================== ANALYSIS ====================
+
 export const analysisService = {
   analyze: async (resumeId, jobDescription) => {
     try {
-      const response = await api.post('/api/analysis/analyze', {
-        resume_id: resumeId,
-        job_description: jobDescription,
-      })
+      const response = await api.post(
+        '/api/analysis/analyze',
+        {
+          resume_id: resumeId,
+          job_description: jobDescription,
+        }
+      )
 
       return response.data
     } catch (error) {
-      throw error.response?.data || { detail: 'Analysis failed' }
+      throw error.response?.data || {
+        detail: 'Analysis failed',
+      }
     }
   },
 
   getHistory: async () => {
     try {
-      const response = await api.get('/api/analysis/history')
+      const response = await api.get(
+        '/api/analysis/history'
+      )
+
       return response.data
     } catch (error) {
-      throw error.response?.data || { detail: 'Failed to fetch history' }
+      throw error.response?.data || {
+        detail: 'Failed to fetch history',
+      }
     }
   },
 
   getOne: async (id) => {
     try {
-      const response = await api.get(`/api/analysis/${id}`)
+      const response = await api.get(
+        `/api/analysis/${id}`
+      )
+
       return response.data
     } catch (error) {
-      throw error.response?.data || { detail: 'Failed to fetch analysis' }
+      throw error.response?.data || {
+        detail: 'Failed to fetch analysis',
+      }
     }
   },
 }
