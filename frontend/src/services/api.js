@@ -1,7 +1,7 @@
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
-const API_BASE_URL = 'http://localhost:8000/api'
+const API_BASE_URL = 'https://ai-resume-analyizer.onrender.com'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -14,9 +14,11 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('access_token')
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
+
     return config
   },
   (error) => {
@@ -33,6 +35,7 @@ api.interceptors.response.use(
       window.location.href = '/login'
       toast.error('Session expired. Please login again.')
     }
+
     return Promise.reject(error)
   }
 )
@@ -40,7 +43,7 @@ api.interceptors.response.use(
 export const authService = {
   register: async (userData) => {
     try {
-      const response = await api.post('/auth/register', userData)
+      const response = await api.post('/api/auth/register', userData)
       return response.data
     } catch (error) {
       throw error.response?.data || { detail: 'Registration failed' }
@@ -57,16 +60,17 @@ export const authService = {
         client_id: '',
         client_secret: '',
       })
-      
-      const response = await api.post('/auth/login', formData, {
+
+      const response = await api.post('/api/auth/login', formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       })
-      
+
       if (response.data.access_token) {
         localStorage.setItem('access_token', response.data.access_token)
       }
+
       return response.data
     } catch (error) {
       throw error.response?.data || { detail: 'Login failed' }
@@ -75,7 +79,7 @@ export const authService = {
 
   getCurrentUser: async () => {
     try {
-      const response = await api.get('/auth/me')
+      const response = await api.get('/api/auth/me')
       return response.data
     } catch (error) {
       throw error.response?.data || { detail: 'Failed to get user info' }
@@ -92,12 +96,13 @@ export const resumeService = {
     try {
       const formData = new FormData()
       formData.append('file', file)
-      
-      const response = await api.post('/resume/upload', formData, {
+
+      const response = await api.post('/api/resume/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
+
       return response.data
     } catch (error) {
       throw error.response?.data || { detail: 'Upload failed' }
@@ -106,7 +111,7 @@ export const resumeService = {
 
   getAll: async () => {
     try {
-      const response = await api.get('/resume/list')
+      const response = await api.get('/api/resume/list')
       return response.data
     } catch (error) {
       throw error.response?.data || { detail: 'Failed to fetch resumes' }
@@ -115,7 +120,7 @@ export const resumeService = {
 
   getOne: async (id) => {
     try {
-      const response = await api.get(`/resume/${id}`)
+      const response = await api.get(`/api/resume/${id}`)
       return response.data
     } catch (error) {
       throw error.response?.data || { detail: 'Failed to fetch resume' }
@@ -124,7 +129,7 @@ export const resumeService = {
 
   delete: async (id) => {
     try {
-      const response = await api.delete(`/resume/${id}`)
+      const response = await api.delete(`/api/resume/${id}`)
       return response.data
     } catch (error) {
       throw error.response?.data || { detail: 'Failed to delete resume' }
@@ -135,10 +140,11 @@ export const resumeService = {
 export const analysisService = {
   analyze: async (resumeId, jobDescription) => {
     try {
-      const response = await api.post('/analysis/analyze', {
+      const response = await api.post('/api/analysis/analyze', {
         resume_id: resumeId,
         job_description: jobDescription,
       })
+
       return response.data
     } catch (error) {
       throw error.response?.data || { detail: 'Analysis failed' }
@@ -147,7 +153,7 @@ export const analysisService = {
 
   getHistory: async () => {
     try {
-      const response = await api.get('/analysis/history')
+      const response = await api.get('/api/analysis/history')
       return response.data
     } catch (error) {
       throw error.response?.data || { detail: 'Failed to fetch history' }
@@ -156,7 +162,7 @@ export const analysisService = {
 
   getOne: async (id) => {
     try {
-      const response = await api.get(`/analysis/${id}`)
+      const response = await api.get(`/api/analysis/${id}`)
       return response.data
     } catch (error) {
       throw error.response?.data || { detail: 'Failed to fetch analysis' }
